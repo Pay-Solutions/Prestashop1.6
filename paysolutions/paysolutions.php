@@ -7,6 +7,8 @@ class Paysolutions extends PaymentModule
 {
 	private	$_html = '';
 	private $_postErrors = array();
+    const STATE_PENDING = 'PAYSOLUTIONS_OS_PENDING';
+    const STATUS_PENDING = 'Paysolutions Payment Pending';
 	public function __construct()
 	{
 		$this->name = 'paysolutions';
@@ -31,14 +33,45 @@ class Paysolutions extends PaymentModule
 	}
 	public function install()
 	{
-		if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')
-		)
+		if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->addOrderStates())
 			return false;
 		return true;
 	}
+
+    public function addOrderStates() {
+        $id = $this->_addOrderState(self::STATUS_PENDING);
+        Configuration::updateValue(self::STATE_PENDING, $id);
+
+        return true;
+    }
+
+
+    public function removeOrderStates() {
+        $this->_deleteOrderState(Configuration::get(self::CFG_STATE_INPROCESS));
+        Configuration::deleteByName(self::CFG_STATE_INPROCESS);
+        $this->_deleteOrderState(Configuration::get(self::CFG_STATE_PENDING));
+        Configuration::deleteByName(self::CFG_STATE_PENDING);
+        return true;
+    }
+
+
+    private function _addOrderState($name) {
+        $OrderState = new OrderState();
+        $OrderState->name = array_fill(0, 10, $name);
+        $OrderState->send_mail = 0;
+        $OrderState->invoice = 0;
+        $OrderState->color = '#4169E1';
+        $OrderState->unremovable = true;
+        $OrderState->logable = 0;
+        $OrderState->add();
+        return $OrderState->id;
+    }
 	public function uninstall()
 	{
-		if (!Configuration::deleteByName('PAYSOLUTIONS_MERCHANTID') || !parent::uninstall())
+		if (!Configuration::deleteByName('PAYSOLUTIONS_MERCHANTID')
+
+
+            || !parent::uninstall())
 			return false;
 		return true;
 	}
@@ -95,7 +128,7 @@ class Paysolutions extends PaymentModule
 	public function displayPaysolutions()
 	{
 		$this->_html .= '
-		<img src="../modules/paysolutions/paysolutions.gif" style="float:left; margin-right:15px;" />
+		<img src="../modules/paysolutions/paysolutions.png" style="float:left; margin-right:15px;" />
 		<b>'.$this->l('This is an official PAYSOLUTIONS payment gateway for Prestashop').'</b><br /><br />
 		'.$this->l('You MUST configure your PAYSOLUTIONS account first before using this module.').'
 		<br /><br /><br /><br/>';

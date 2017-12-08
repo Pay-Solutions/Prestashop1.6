@@ -2,12 +2,12 @@
 	<div class="col-xs-12 col-md-12">
         <p class="payment_module">
             <a style="padding: 10px;" href="javascript:$('#paysolutions_form').submit();" title="{l s='Pay with Paysolutions' mod='paysolutions'}">
-		<img src="{$module_template_dir}paysolutions.gif" alt="{l s='Pay with Paysolutions' mod='paysolutions'}" />PAYSOLUTIONS<span> (Pay with Paysolutions)</span>
+		<img src="{$module_template_dir}paysolutions.png" alt="{l s='Pay with Paysolutions' mod='paysolutions'}" />PAYSOLUTIONS<span> (Pay with Paysolutions)</span>
             </a>
         </p>
     </div>
 </div>
-<form action="modules\paysolutions\payment.php" method="post" id="paysolutions_form" class="hidden">
+<form action="{$base_dir}modules/paysolutions/payment.php" method="post" id="paysolutions_form" class="hidden">
     <input type="hidden" name="paysolutionsUrl" value="{$paysolutionsUrl}" />
 	<input type="hidden" name="id_cart" value="{$id_cart}" />
 	<input type="hidden" name="busines" value="{$business}" />

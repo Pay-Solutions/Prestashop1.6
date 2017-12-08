@@ -12,11 +12,9 @@ $curr = $_REQUEST["curr"];
 $email = $_REQUEST["customer_email"];
 $products = $_REQUEST["products"];
 $amount = $_REQUEST["total"];
-
 $paysolutions = new Paysolutions();
 
-$paysolutions->validateOrder($id_cart, 15, $amount, $paysolutions->displayName, NULL, array(), (int)$currencyCode, false, $customer->secure_key);
-
+$paysolutions->validateOrder($id_cart, Configuration::get(Paysolutions::STATE_PENDING), $amount, $paysolutions->displayName, NULL, array(), (int)$currencyCode, false, $customer->secure_key);
 $id_order = Order::getOrderByCartId(intval($id_cart));
 $postURL = $_REQUEST["postURL"]."&id_order=".$id_order;
 ?>
@@ -32,10 +30,8 @@ $postURL = $_REQUEST["postURL"]."&id_order=".$id_order;
 	<input type="hidden" name="productdetail" value="Purchase Number :<?=$id_order?>" />
 	<input type="hidden" name="total" value="<?=$amount?>" />
 	<input type="hidden" name="paypal_amt" value="<?=$amount?>" />
+	<input type="hidden" name="postbackurl" value="<?=$amount?>" />
 </form>
-
-<?php
-echo "<SCRIPT language='JavaScript'>";
-echo "document.payso_form.submit();";
-echo "</SCRIPT>";
-?>
+<SCRIPT language='JavaScript'>
+    document.payso_form.submit();
+</SCRIPT>

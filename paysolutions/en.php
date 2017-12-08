@@ -1,6 +1,3 @@
 <?php
-
-global $_MODULE;
+ global $_MODULE;
 $_MODULE = array();
-
-?>
